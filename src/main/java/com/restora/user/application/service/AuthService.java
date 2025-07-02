@@ -1,5 +1,7 @@
 package com.restora.user.application.service;
 
+import com.restora.config.exception.BusinessException;
+import com.restora.config.exception.ResourceNotFoundException;
 import com.restora.user.application.dto.command.LoginUserCommand;
 import com.restora.user.application.dto.command.RegisterUserCommand;
 import com.restora.user.application.port.in.LoginUseCase;
@@ -8,9 +10,9 @@ import com.restora.user.application.port.out.*;
 import com.restora.user.domain.enums.UserRole;
 import com.restora.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +30,7 @@ public class AuthService implements LoginUseCase, RegisterUseCase {
     public User loginUser(LoginUserCommand command) {
 
         return loadUserByEmailPort.loadUserByEmail(command.email())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
     }
 
@@ -36,10 +38,14 @@ public class AuthService implements LoginUseCase, RegisterUseCase {
     public User registerUser(RegisterUserCommand command) {
         loadUserByEmailPort.loadUserByEmail(command.email())
                 .ifPresent(user -> {
-                    throw new RuntimeException("User already exists with email: " + command.email());
+                    throw new BusinessException(
+                            "Ya existe un usuario con el email: " + command.email(),
+                            HttpStatus.CONFLICT,
+                            "USER_ALREADY_EXISTS"
+                    );
                 });
 
-        // Rol user por default
+        // Rol user por default 
         UserRole role = UserRole.USER;
 
         // Encriptar la contraseña con el PasswordEncoderPort que este se implementa en la infraestructura
