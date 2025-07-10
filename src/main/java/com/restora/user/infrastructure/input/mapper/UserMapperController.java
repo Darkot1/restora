@@ -2,9 +2,11 @@ package com.restora.user.infrastructure.input.mapper;
 
 import com.restora.user.application.dto.command.LoginUserCommand;
 import com.restora.user.application.dto.command.RegisterUserCommand;
+import com.restora.user.application.dto.response.LoginResponse;
 import com.restora.user.domain.model.User;
 import com.restora.user.infrastructure.input.dto.request.LoginUserRequestDto;
 import com.restora.user.infrastructure.input.dto.request.RegisterUserRequestDto;
+import com.restora.user.infrastructure.input.dto.response.LoginUserResponseDto;
 import com.restora.user.infrastructure.input.dto.response.UserResponseDto;
 import org.mapstruct.Mapper;
 
@@ -19,4 +21,5 @@ public interface UserMapperController {
     // Mapea entidad dominio a DTO de respuesta REST
     UserResponseDto toUserResponseDTO(User user);
 
+    LoginUserResponseDto toLoginUserResponseDto(LoginResponse loginResponse);
 }

@@ -4,6 +4,7 @@ import com.restora.config.exception.BusinessException;
 import com.restora.config.exception.ResourceNotFoundException;
 import com.restora.user.application.dto.command.LoginUserCommand;
 import com.restora.user.application.dto.command.RegisterUserCommand;
+import com.restora.user.application.dto.response.LoginResponse;
 import com.restora.user.application.port.in.LoginUseCase;
 import com.restora.user.application.port.in.RegisterUseCase;
 import com.restora.user.application.port.out.*;
@@ -27,11 +28,17 @@ public class AuthService implements LoginUseCase, RegisterUseCase {
 
 
     @Override
-    public User loginUser(LoginUserCommand command) {
+    public LoginResponse loginUser(LoginUserCommand command) {
 
-        return loadUserByEmailPort.loadUserByEmail(command.email())
+        authenticationPort.authenticate(command.email(), command.password());
+        User user = loadUserByEmailPort.loadUserByEmail(command.email())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
+        String token = tokenGenerationPort.generateToken(user);
+
+        return LoginResponse.builder()
+                .token(token)
+                .build();
     }
 
     @Override
