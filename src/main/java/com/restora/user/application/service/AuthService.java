@@ -46,7 +46,7 @@ public class AuthService implements LoginUseCase, RegisterUseCase {
                 });
 
         // Rol user por default 
-        UserRole role = UserRole.USER;
+        UserRole role = command.role() != null ? command.role() : UserRole.USER;
 
         // Encriptar la contraseña con el PasswordEncoderPort que este se implementa en la infraestructura
         String encodedPassword = passwordEncoderPort.encodePassword(command.password());

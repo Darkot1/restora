@@ -1,5 +1,7 @@
 package com.restora.user.infrastructure.input.dto.request;
 
+import com.restora.user.domain.enums.UserRole;
+import com.restora.user.domain.enums.UserStatus;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,10 +24,10 @@ public record RegisterUserRequestDto(
         @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
         String password,
 
-        @NotBlank(message = "El rol es obligatorio")
-        String role,
+        @NotNull(message = "El rol es obligatorio")
+        UserRole role,
 
-        @NotBlank(message = "El estado es obligatorio")
-        String status
+        @NotNull(message = "El estado es obligatorio")
+        UserStatus status
 ) {
 }
